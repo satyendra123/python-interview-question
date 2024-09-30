@@ -23,3 +23,17 @@ for char in sentence:
         character[char] = 1
 
 print(character)
+
+Q.4 i have a list of names of students and the other heights of the students. i want to find the name of the largest height of the students and the lower heights of the student
+def create_name_height_dict(names, heights):
+    sorted_height = sorted(heights)
+    name_height_dict = {}
+    for i in range(len(names)):
+        name_height_dict[names[i]] = sorted_height[i]
+
+    return name_height_dict
+
+name = ["sid", "pintu", "sandhya"]
+height = [20, 50, 30]
+result = create_name_height_dict(name, height)
+print(result)
