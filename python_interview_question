@@ -1,0 +1,25 @@
+Q.1 in a sentence calculate the number of vowels in a sentence
+Ans sentence = "HEllo how are you when will you come here"
+vowels = "aeiouAEIOU"
+count=0
+for char in sentence:
+    if char in vowels:
+        count+=1
+print(count)
+
+Q.2 in a sentence calculate the number of words in a sentence
+sentence = "HEllo how are you when will you come here"
+words=sentence.split()
+print(len(words))
+
+Q.3 calculate the occurance of each characters in a sentence. isme mai kya karunga ki ek ek character ko dictionary me dalunga aur agr character jo hai dictionary me hai to +1 kar denge otherwise usko 1 rkhenge
+sentence = "HEllo how are you when will you come here"
+character = {}
+for char in sentence:
+    print(character)
+    if char in character:
+        character[char] += 1
+    else:
+        character[char] = 1
+
+print(character)
