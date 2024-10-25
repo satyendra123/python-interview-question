@@ -180,3 +180,54 @@ account.check_balance()
 account.deposit(500)
 account.withdraw(300)
 account.withdraw(2000)
+
+#EXAMPLE Write a Python class Inventory with attributes like item_id, item_name, stock_count, and price, and methods like add_item, update_item, and check_item_details.
+#Use a dictionary to store the item details, where the key is the item_id and the value is a dictionary containing the item_name, stock_count, and price.
+
+class Inventory:
+    def __init__(self):
+        """Initialize the inventory with an empty dictionary to store items."""
+        self.items = {}
+
+    def add_item(self, item_id, item_name, stock_count, price):
+        """Add a new item to the inventory."""
+        if item_id not in self.items:
+            self.items[item_id] = {
+                'item_name': item_name,
+                'stock_count': stock_count,
+                'price': price
+            }
+            print(f"Item '{item_name}' added successfully.")
+        else:
+            print(f"Item with ID '{item_id}' already exists in the inventory.")
+
+    def update_item(self, item_id, stock_count=None, price=None):
+        """Update the stock count or price of an existing item."""
+        if item_id in self.items:
+            if stock_count is not None:
+                self.items[item_id]['stock_count'] = stock_count
+            if price is not None:
+                self.items[item_id]['price'] = price
+            print(f"Item with ID '{item_id}' updated successfully.")
+        else:
+            print(f"Item with ID '{item_id}' does not exist.")
+
+    def check_item_details(self, item_id):
+        """Check the details of an item by its ID."""
+        if item_id in self.items:
+            item = self.items[item_id]
+            print(f"Item ID: {item_id}")
+            print(f"Item Name: {item['item_name']}")
+            print(f"Stock Count: {item['stock_count']}")
+            print(f"Price: {item['price']}")
+        else:
+            print(f"Item with ID '{item_id}' does not exist in the inventory.")
+
+# Example usage:
+inventory = Inventory()
+inventory.add_item(101, "Laptop", 50, 999.99)
+inventory.add_item(102, "Smartphone", 100, 599.99)
+inventory.check_item_details(101)
+inventory.update_item(102, stock_count=90, price=579.99)
+inventory.check_item_details(102)
+inventory.add_item(101, "Laptop", 50, 999.99)
