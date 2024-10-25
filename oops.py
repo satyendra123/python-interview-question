@@ -141,3 +141,42 @@ x = String("hello world");
 print(x.reverse())
 print(x.ispalindrome())
 print(x.Uppercase())
+
+#EXAMPLE- . Write a Python class BankAccount with attributes like account_number, balance, date_of_opening and customer_name, and methods like deposit, withdraw, and check_balance.
+class BankAccount:
+    def __init__(self, account_number, customer_name, date_of_opening, balance=0):
+        """Initialize the bank account with account number, customer name, date of opening, and optional balance."""
+        self.account_number = account_number
+        self.customer_name = customer_name
+        self.date_of_opening = date_of_opening
+        self.balance = balance
+
+    def deposit(self, amount):
+        """Deposit money into the account."""
+        if amount > 0:
+            self.balance += amount
+            print(f"Deposited {amount} successfully. New balance: {self.balance}")
+        else:
+            print("Invalid deposit amount!")
+
+    def withdraw(self, amount):
+        """Withdraw money from the account."""
+        if amount > 0:
+            if self.balance >= amount:
+                self.balance -= amount
+                print(f"Withdrew {amount} successfully. New balance: {self.balance}")
+            else:
+                print("Insufficient balance!")
+        else:
+            print("Invalid withdrawal amount!")
+
+    def check_balance(self):
+        """Check the current balance of the account."""
+        print(f"Current balance: {self.balance}")
+
+# Example usage:
+account = BankAccount("123456789", "John Doe", "2024-01-01", 1000)
+account.check_balance()
+account.deposit(500)
+account.withdraw(300)
+account.withdraw(2000)
