@@ -231,3 +231,85 @@ inventory.check_item_details(101)
 inventory.update_item(102, stock_count=90, price=579.99)
 inventory.check_item_details(102)
 inventory.add_item(101, "Laptop", 50, 999.99)
+
+#Write a Python class Restaurant with attributes like menu_items, book_table, and customer_orders, and methods like add_item_to_menu, book_tables, and customer_order.
+#Perform the following tasks now:
+
+#Now add items to the menu.
+#Make table reservations.
+#Take customer orders.
+#Print the menu.
+#Print table reservations.
+#Print customer orders.
+#Note: Use dictionaries and lists to store the data.
+
+class Restaurant:
+    def __init__(self):
+        """Initialize the restaurant with empty menu, table bookings, and customer orders."""
+        self.menu_items = {}  # Store menu items with item name as key and price as value
+        self.booked_tables = []  # List to store booked table numbers
+        self.customer_orders = {}  # Dictionary to store customer orders with table number as key
+
+    def add_item_to_menu(self, item_name, price):
+        """Add a new item to the menu."""
+        if item_name not in self.menu_items:
+            self.menu_items[item_name] = price
+            print(f"Item '{item_name}' added to the menu at ${price}.")
+        else:
+            print(f"Item '{item_name}' already exists in the menu.")
+
+    def book_table(self, table_number):
+        """Book a table for the customer."""
+        if table_number not in self.booked_tables:
+            self.booked_tables.append(table_number)
+            print(f"Table {table_number} has been booked successfully.")
+        else:
+            print(f"Table {table_number} is already booked.")
+
+    def customer_order(self, table_number, order_items):
+        """Take customer order and associate it with a table number."""
+        if table_number in self.booked_tables:
+            if table_number not in self.customer_orders:
+                self.customer_orders[table_number] = []
+            self.customer_orders[table_number].extend(order_items)
+            print(f"Order taken for table {table_number}: {order_items}")
+        else:
+            print(f"Table {table_number} is not booked yet. Please book the table first.")
+
+    def print_menu(self):
+        """Print the current menu."""
+        if self.menu_items:
+            print("Menu Items:")
+            for item, price in self.menu_items.items():
+                print(f"{item}: ${price}")
+        else:
+            print("The menu is empty.")
+
+    def print_table_reservations(self):
+        """Print all booked tables."""
+        if self.booked_tables:
+            print("Booked Tables:", self.booked_tables)
+        else:
+            print("No tables have been booked.")
+
+    def print_customer_orders(self):
+        """Print all customer orders."""
+        if self.customer_orders:
+            print("Customer Orders:")
+            for table, orders in self.customer_orders.items():
+                print(f"Table {table}: {orders}")
+        else:
+            print("No orders have been placed.")
+
+# Example usage:
+restaurant = Restaurant()
+restaurant.add_item_to_menu("Pasta", 12.99)
+restaurant.add_item_to_menu("Burger", 9.99)
+restaurant.add_item_to_menu("Pizza", 14.99)
+restaurant.book_table(1)
+restaurant.book_table(2)
+restaurant.customer_order(1, ["Pasta", "Burger"])
+restaurant.customer_order(2, ["Pizza"])
+restaurant.print_menu()
+restaurant.print_table_reservations()
+restaurant.print_customer_orders()
