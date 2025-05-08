@@ -13,12 +13,8 @@ print(single_element_tuple)  # Output: (1,)
 
 
 my_tuple = (10, 20, 30, 40, 50)
-
-# Accessing elements by index
 print(my_tuple[0])  # Output: 10
 print(my_tuple[3])  # Output: 40
-
-# Negative indexing
 print(my_tuple[-1])  # Output: 50 (last element)
 print(my_tuple[-2])  # Output: 40 (second-to-last element)
 
@@ -96,17 +92,20 @@ packed = ("John", 25, "Developer")
 name, age, job = packed
 print(name, age, job)  # Output: John 25 Developer
 
-
+EX-
 import sys
-
 my_list = [1, 2, 3, 4, 5]
 my_tuple = (1, 2, 3, 4, 5)
-
 print(sys.getsizeof(my_list))   # Size of list in memory
 print(sys.getsizeof(my_tuple))  # Size of tuple in memory
-
-
 days_of_week = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
 print(days_of_week[0])  # Output: Monday
 
+EX-1 send this data into the list
+radius = (2,3,4,5)
+l1=[]
+for num in radius:
+    l1.append(num)
+    
+print(l1)
 
