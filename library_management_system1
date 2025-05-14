@@ -1,0 +1,200 @@
+### Folder: models
+# File: models/book.py
+
+class Book:
+    def __init__(self, book_id, title, author, available=True):
+        self.book_id = book_id
+        self.title = title
+        self.author = author
+        self.available = available
+
+    def borrow(self):
+        if self.available:
+            self.available = False
+            return True
+        return False
+
+    def return_book(self):
+        self.available = True
+
+    def __str__(self):
+        return f"[{self.book_id}] {self.title} by {self.author} ({'Available' if self.available else 'Borrowed'})"
+
+
+### File: models/member.py
+
+class Member:
+    def __init__(self, member_id, name):
+        self.member_id = member_id
+        self.name = name
+        self.borrowed_books = []
+
+    def borrow_book(self, book):
+        if book.borrow():
+            self.borrowed_books.append(book)
+            return True
+        return False
+
+    def return_book(self, book):
+        if book in self.borrowed_books:
+            book.return_book()
+            self.borrowed_books.remove(book)
+            return True
+        return False
+
+    def __str__(self):
+        return f"[{self.member_id}] {self.name}"
+
+
+### File: models/library.py
+
+from models.book import Book
+from models.member import Member
+import mysql.connector
+
+class Library:
+    def __init__(self):
+        self.conn = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="library_db"
+        )
+        self.cursor = self.conn.cursor()
+        self._setup_tables()
+
+    def _setup_tables(self):
+        self.cursor.execute("""
+        CREATE TABLE IF NOT EXISTS books (
+            book_id VARCHAR(10) PRIMARY KEY,
+            title VARCHAR(255),
+            author VARCHAR(255),
+            available BOOLEAN DEFAULT TRUE
+        )""")
+
+        self.cursor.execute("""
+        CREATE TABLE IF NOT EXISTS members (
+            member_id VARCHAR(10) PRIMARY KEY,
+            name VARCHAR(255)
+        )""")
+
+        self.cursor.execute("""
+        CREATE TABLE IF NOT EXISTS borrowed_books (
+            member_id VARCHAR(10),
+            book_id VARCHAR(10),
+            FOREIGN KEY (member_id) REFERENCES members(member_id),
+            FOREIGN KEY (book_id) REFERENCES books(book_id)
+        )""")
+        self.conn.commit()
+
+    def add_book(self, book):
+        self.cursor.execute("INSERT INTO books (book_id, title, author, available) VALUES (%s, %s, %s, %s)",
+                            (book.book_id, book.title, book.author, book.available))
+        self.conn.commit()
+
+    def register_member(self, member):
+        self.cursor.execute("INSERT INTO members (member_id, name) VALUES (%s, %s)",
+                            (member.member_id, member.name))
+        self.conn.commit()
+
+    def find_book(self, book_id):
+        self.cursor.execute("SELECT * FROM books WHERE book_id = %s", (book_id,))
+        result = self.cursor.fetchone()
+        if result:
+            return Book(*result)
+        return None
+
+    def find_member(self, member_id):
+        self.cursor.execute("SELECT * FROM members WHERE member_id = %s", (member_id,))
+        result = self.cursor.fetchone()
+        if result:
+            return Member(*result)
+        return None
+
+    def borrow_book(self, member_id, book_id):
+        book = self.find_book(book_id)
+        if book and book.available:
+            self.cursor.execute("UPDATE books SET available = FALSE WHERE book_id = %s", (book_id,))
+            self.cursor.execute("INSERT INTO borrowed_books (member_id, book_id) VALUES (%s, %s)", (member_id, book_id))
+            self.conn.commit()
+            return True
+        return False
+
+    def return_book(self, member_id, book_id):
+        self.cursor.execute("DELETE FROM borrowed_books WHERE member_id = %s AND book_id = %s", (member_id, book_id))
+        self.cursor.execute("UPDATE books SET available = TRUE WHERE book_id = %s", (book_id,))
+        self.conn.commit()
+        return True
+
+    def list_books(self):
+        self.cursor.execute("SELECT * FROM books")
+        return [Book(*row) for row in self.cursor.fetchall()]
+
+
+### File: main.py
+
+from models.book import Book
+from models.member import Member
+from models.library import Library
+
+
+def main():
+    library = Library()
+
+    while True:
+        print("\nLibrary Management System")
+        print("1. Add Book")
+        print("2. Register Member")
+        print("3. Borrow Book")
+        print("4. Return Book")
+        print("5. List All Books")
+        print("6. Exit")
+
+        choice = input("Enter your choice: ")
+
+        if choice == "1":
+            book_id = input("Book ID: ")
+            title = input("Title: ")
+            author = input("Author: ")
+            book = Book(book_id, title, author)
+            library.add_book(book)
+            print("Book added.")
+
+        elif choice == "2":
+            member_id = input("Member ID: ")
+            name = input("Name: ")
+            member = Member(member_id, name)
+            library.register_member(member)
+            print("Member registered.")
+
+        elif choice == "3":
+            member_id = input("Member ID: ")
+            book_id = input("Book ID: ")
+            if library.borrow_book(member_id, book_id):
+                print("Book borrowed.")
+            else:
+                print("Borrowing failed. Book may be unavailable.")
+
+        elif choice == "4":
+            member_id = input("Member ID: ")
+            book_id = input("Book ID: ")
+            if library.return_book(member_id, book_id):
+                print("Book returned.")
+            else:
+                print("Returning failed.")
+
+        elif choice == "5":
+            books = library.list_books()
+            for book in books:
+                print(book)
+
+        elif choice == "6":
+            print("Exiting...")
+            break
+
+        else:
+            print("Invalid choice. Try again.")
+
+
+if __name__ == '__main__':
+    main()
