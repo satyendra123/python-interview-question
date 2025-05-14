@@ -1,0 +1,217 @@
+### Folder: models
+# File: models/book.py
+
+class Book:
+    def __init__(self, book_id, title, author):
+        self.book_id = book_id
+        self.title = title
+        self.author = author
+        self.available = True
+
+    def borrow(self):
+        if self.available:
+            self.available = False
+            return True
+        return False
+
+    def return_book(self):
+        self.available = True
+
+    def __str__(self):
+        return f"[{self.book_id}] {self.title} by {self.author} ({'Available' if self.available else 'Borrowed'})"
+
+
+### File: models/member.py
+
+class Member:
+    def __init__(self, member_id, name):
+        self.member_id = member_id
+        self.name = name
+        self.borrowed_books = []
+
+    def borrow_book(self, book):
+        if book.borrow():
+            self.borrowed_books.append(book)
+            return True
+        return False
+
+    def return_book(self, book):
+        if book in self.borrowed_books:
+            book.return_book()
+            self.borrowed_books.remove(book)
+            return True
+        return False
+
+    def __str__(self):
+        return f"[{self.member_id}] {self.name}"
+
+
+### File: models/library.py
+
+from models.book import Book
+from models.member import Member
+
+class Library:
+    def __init__(self):
+        self.books = []
+        self.members = []
+
+    def add_book(self, book):
+        self.books.append(book)
+
+    def register_member(self, member):
+        self.members.append(member)
+
+    def find_book(self, book_id):
+        for book in self.books:
+            if book.book_id == book_id:
+                return book
+        return None
+
+    def find_member(self, member_id):
+        for member in self.members:
+            if member.member_id == member_id:
+                return member
+        return None
+
+    def borrow_book(self, member_id, book_id):
+        member = self.find_member(member_id)
+        book = self.find_book(book_id)
+        if member and book:
+            return member.borrow_book(book)
+        return False
+
+    def return_book(self, member_id, book_id):
+        member = self.find_member(member_id)
+        book = self.find_book(book_id)
+        if member and book:
+            return member.return_book(book)
+        return False
+
+    def list_books(self):
+        return self.books
+
+
+### Folder: services
+# File: services/data_handler.py
+
+import json
+
+def save_data(library, file_path):
+    data = {
+        "books": [
+            {
+                "book_id": book.book_id,
+                "title": book.title,
+                "author": book.author,
+                "available": book.available
+            } for book in library.books
+        ],
+        "members": [
+            {
+                "member_id": member.member_id,
+                "name": member.name,
+                "borrowed_books": [book.book_id for book in member.borrowed_books]
+            } for member in library.members
+        ]
+    }
+    with open(file_path, 'w') as f:
+        json.dump(data, f, indent=4)
+
+
+def load_data(library, file_path):
+    try:
+        with open(file_path, 'r') as f:
+            data = json.load(f)
+
+        book_map = {}
+        for b in data.get("books", []):
+            from models.book import Book
+            book = Book(b["book_id"], b["title"], b["author"])
+            book.available = b["available"]
+            library.add_book(book)
+            book_map[b["book_id"]] = book
+
+        for m in data.get("members", []):
+            from models.member import Member
+            member = Member(m["member_id"], m["name"])
+            for book_id in m["borrowed_books"]:
+                book = book_map.get(book_id)
+                if book:
+                    member.borrowed_books.append(book)
+            library.register_member(member)
+
+    except FileNotFoundError:
+        pass
+
+
+### File: main.py
+
+from models.book import Book
+from models.member import Member
+from models.library import Library
+from services.data_handler import save_data, load_data
+
+
+def main():
+    library = Library()
+    load_data(library, "library_data.json")
+
+    while True:
+        print("\nLibrary Management System")
+        print("1. Add Book")
+        print("2. Register Member")
+        print("3. Borrow Book")
+        print("4. Return Book")
+        print("5. List All Books")
+        print("6. Exit")
+
+        choice = input("Enter your choice: ")
+
+        if choice == "1":
+            book_id = input("Book ID: ")
+            title = input("Title: ")
+            author = input("Author: ")
+            book = Book(book_id, title, author)
+            library.add_book(book)
+            print("Book added.")
+
+        elif choice == "2":
+            member_id = input("Member ID: ")
+            name = input("Name: ")
+            member = Member(member_id, name)
+            library.register_member(member)
+            print("Member registered.")
+
+        elif choice == "3":
+            member_id = input("Member ID: ")
+            book_id = input("Book ID: ")
+            if library.borrow_book(member_id, book_id):
+                print("Book borrowed.")
+            else:
+                print("Borrowing failed.")
+
+        elif choice == "4":
+            member_id = input("Member ID: ")
+            book_id = input("Book ID: ")
+            if library.return_book(member_id, book_id):
+                print("Book returned.")
+            else:
+                print("Returning failed.")
+
+        elif choice == "5":
+            books = library.list_books()
+            for book in books:
+                print(book)
+
+        elif choice == "6":
+            save_data(library, "library_data.json")
+            print("Data saved. Exiting...")
+            break
+
+        else:
+            print("Invalid choice. Try again.")
+
+
+if __name__ == '__main__':
+    main()
