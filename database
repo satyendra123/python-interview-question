@@ -6,11 +6,11 @@ conn = mysql.connector.connect(host='localhost',user='root',password='',database
 is_connected() = agar mai conn.is_connected() karu to ye mujhe true ya false dega. so isse check ho jayega. yaa phir hum try except ka use lar sakte hai isme
 close() = connection ko close karne ke liye hum close() method ka use karenge
 
-EX-3
-import mysql.connector
-conn = mysql.connector.connect(host='localhost',user='root',password='',database='esd_app')
-connected = conn.is_connected()
-if connected:
-    print("connected to database")
-else:
+EX-3                                                                                                    EX-4 
+import mysql.connector                                                                                      import mysql.connector
+conn = mysql.connector.connect(host='localhost',user='root',password='',database='esd_app')                 try:
+connected = conn.is_connected()                                                                                 conn = mysql.connector.connect(host='localhost',user='root',password='',database='esd_app')
+if connected:                                                                                                   print("Database connection successful")
+    print("connected to database")                                                                           except mysql.connector.Error as err:
+else:                                                                                                           print("Error connecting to the database")
     print("Error connecting to database")
