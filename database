@@ -14,3 +14,4 @@ if connected:                                                                   
     print("connected to database")                                                                           except mysql.connector.Error as err:
 else:                                                                                                           print("Error connecting to the database")
     print("Error connecting to database")
+
