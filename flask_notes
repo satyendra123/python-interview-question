@@ -1,0 +1,14 @@
+# make a simple app using flask
+from flask import Flask
+app= Flask(__name__)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0',port=True, debug=True)
+
+Note- so iska use karke hum apna simple sa ek server bana chuke hai. hum __name__ ka use karte hai kyuki hum chahte hai ki ye jb tk wait kare run hone ke liye jb tk hum __name__ ko call na kar le. humne __name__=='__main__' likha hai
+      means jab hum run kare code ko to hi humara server run hona start ho. aur debug=True karne ka mtlb hai ki agar koi error aaye to hume show kar de browser me hi usi samay
+
+app.run() = iska use hum server ko start karne ke liye karte hai
+@app.use('/') = iska use hum index page me data show karne ke liye karte hai. means agar hum direct http://localhost:8000 run karenge to ye jo return karega hume ye dekhne ko milega
+@app.route('/user', method=['GET']) = iska use hum karte hai taki hum us routes se data ko get yaa post kar sake. ise hi hum api url bolte hai
+@app.before_request = ye jo decorator hai humara iska mtlb ki koi bhi request se pahle ye function run hoga
+@app.after_request =  ye jo decorator hai humara iska mtlb ki koi bhi request ke baad ye function run hoga
