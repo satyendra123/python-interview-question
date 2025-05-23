@@ -1,0 +1,5 @@
+Ex-1 database connection                                                                                  EX-2
+import mysql.connector                                                                                        db_config = {'host':'localhost','user':'root','password':'','database':'esd_app'}
+conn = mysql.connector.connect(host='localhost',user='root',password='',database='esd_app')                   conn = mysql.connector.connect(**db_config)
+                                                                                                              Note- **db_config jo hai dictionary ko is form me karne ke liye use karte hai host='localhost',user='root',password='',database='esd_app' 
+                                                                                                                
