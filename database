@@ -47,8 +47,25 @@ Note- commit() => commit method ka use hum karte hai jab hume inserted row ko da
                    jab hum table me kuch modification karte hai tb hume iski jarurat padhti hai. agar database se kewal data ko fetch karna hai kuch modification nahi karna hai to 
                    hume commit() ka use nahi karna padhega
 
+fetchone() method= fetchone() hume first row fetch karke deta hai. fetchone() will automatically go to the next row means if i call the fetchone() again then it gives me the next row data
+# This script connects to a MySQL database and creates a table named 'user'. 
+import mysql.connector
+conn = mysql.connector.connect(host='localhost', user='root', password='', database='esd_app')
+print("Database connection successful")
+try: 
+    sql = "select * from student"
+    cursor = conn.cursor()
+    cursor.execute(sql)
+    row= cursor.fetchone()
+    print(row)
+    if conn.is_connected():
+        cursor.close()
+        conn.close()
+        print("Database connection closed")
+except mysql.connector.Error as err:
+    print(f"Error: {err}")
 
-
+# fetch all the data
 
 
 
