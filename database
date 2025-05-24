@@ -49,23 +49,23 @@ Note- commit() => commit method ka use hum karte hai jab hume inserted row ko da
 
 fetchone() method= fetchone() hume first row fetch karke deta hai. fetchone() will automatically go to the next row means if i call the fetchone() again then it gives me the next row data
 # This script connects to a MySQL database and creates a table named 'user'. 
-import mysql.connector
-conn = mysql.connector.connect(host='localhost', user='root', password='', database='esd_app')
-print("Database connection successful")
-try: 
-    sql = "select * from student"
-    cursor = conn.cursor()
-    cursor.execute(sql)
-    row= cursor.fetchone()
-    print(row)
-    if conn.is_connected():
-        cursor.close()
-        conn.close()
+#EX-1 fetch only one data from the database                                                               #EX-2 
+import mysql.connector                                                                                          import mysql.connector
+conn = mysql.connector.connect(host='localhost', user='root', password='', database='esd_app')                  conn = mysql.connector.connect(host='localhost', user='root', password='', database='esd_app')
+print("Database connection successful")                                                                         print("Database connection successful")
+try:                                                                                                            try: 
+    sql = "select * from student"                                                                                   sql = "select * from student"
+    cursor = conn.cursor()                                                                                          cursor = conn.cursor()
+    cursor.execute(sql)                                                                                             cursor.execute(sql)
+    row= cursor.fetchone()                                                                                          row= cursor.fetchone()
+    print(row)                                                                                                      while row is not None:
+    if conn.is_connected():                                                                                         print(row)
+        cursor.close()                                                                                              row= cursor.fetchone()
+        conn.close()                                                                                                if conn.is_connected():
         print("Database connection closed")
 except mysql.connector.Error as err:
     print(f"Error: {err}")
 
-# fetch all the data
 
 
 
