@@ -15,3 +15,28 @@ if connected:                                                                   
 else:                                                                                                           print("Error connecting to the database")
     print("Error connecting to database")
 
+EX-5
+# This script connects to a MySQL database and creates a table named 'user'.
+import mysql.connector
+try:
+    conn = mysql.connector.connect(host='localhost',user='root',password='',database='esd_app')
+    print("Database connection successful")
+    #sql= "create table student(id int auto_increment not null primary key, name varchar(50), email varchar(50), password varchar(50), phone varchar(50), address varchar(50))"
+    sql = "show databases"
+    cursor = conn.cursor()
+    cursor.execute(sql)
+    for i in cursor:
+        print(i)
+except mysql.connector.Error as err:
+    print(f"Error: {err}")
+
+finally:
+    if  conn.is_connected():
+        cursor.close()
+        conn.close()
+        print("Database connection closed")
+
+#EX-6 commit() => commit method ka use hum karte hai jab hume inserted row ko database me save karne ke liye. otherwise no changes are made in the database. conn object ke through commit() method ka use karte hai
+
+
+
