@@ -44,6 +44,10 @@ if conn.is_connected():
     print("Database connection closed")
 
 Note- commit() => commit method ka use hum karte hai jab hume inserted row ko database me save karne ke liye. otherwise no changes are made in the database. conn object ke through commit() method ka use karte hai
+                   jab hum table me kuch modification karte hai tb hume iski jarurat padhti hai. agar database se kewal data ko fetch karna hai kuch modification nahi karna hai to 
+                   hume commit() ka use nahi karna padhega
+
+
 
 
 
