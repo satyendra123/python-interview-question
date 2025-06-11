@@ -56,10 +56,23 @@ name = data.get('fees')
 print(name)
 
 note - is case me ye hume None dega name ke andar kyuki humne get() method ka use kiya hai dictionary se data nikalne ke liye. jabki agar mai ise data['fees'] karta to mujhe error milta
+
+
+
+2) what is the difference between the Response and the jsonify
+(i) jsonify- in the jsonify it is automatically do everything by its own we don't need to write it by ourself like ye python ke dictionary or list ko automatically convert kar deta hai json format me, headers ko bhi apne se set kar deta hai
+
+data = {'status': 'success', 'message': 'This is a JSON response'}
+    return jsonify(data), 200
+
+(ii) Response - Response me hume sara chiz khud se karna padta hai. means jaise json format me data send karna hai to hume json.dumps() ka use karna padega apne ditionary or list ko json format me send karne ke liye
+data = {'status': 'success', 'message': 'Manual JSON'}
+    response = Response(response=json.dumps(data),status=200, mimetype='application/json')
 '''
 
 
 from flask import Flask, Response, jsonify, request
+import json
 import mysql.connector
 
 app = Flask(__name__)
