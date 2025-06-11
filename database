@@ -68,5 +68,115 @@ except mysql.connector.Error as err:
 
 
 
+3) using the flask
+'''
+note- request parameter se data lene ke liye request.args() method ka use karte hai     name = request.args.get('name'), id= request.args.get('id') ise hum multiple bar call karke usme se data nikal sakte hai lekin post me aisa nahi hota hai
+name = request.args.get('name')
+age = request.args.get('age')
+marks = request.args.get('marks')
+
+
+note- post data se data lene ke liye request.get_json() method ka use karte hai         name = request.get_json.get('name'), age = request.get_json.get('age')
+agar mai aisa karta hu to ye mujhe error dega kyuki jab mai pahli bar call karunga to data mujhe de dega sara ka sara body ka... aur agar ab mai iske bad phir se get_json() karunga to wo mujhe none dega kyuki wo pahle mujhe body ka data de chuka hai
+
+so hum kya karte hai ki ek bar me hi sara ka sara data le lete hai body ka aur usko data variable ke andar store kara lete hai aur hir us data variable me se data ko nikalte rhte hai jo sa chahiye rahta hai
+
+data = request.get_json()
+name = data.get('name')
+age = data.get('age')
+marks = data.get('marks')
+
+hum dictionary ke key me se agar data nikalna chahte hai uske key se to hum get() method ka use karte hai jaise hum is example se samjhne ki kosis karte hai
+
+data= {
+    'name':"satyendra",
+    'age':156,
+    'marks':100
+}
+
+name = data.get('name') or we can write it like this also name = data['name']
+print(name)
+
+
+note- but jab hum .get('name') method se data fetch karte hai to agar dictionary me key nahi hai to bhi ye hume error nahi dega jabki agar hum directly long bracket ka use karke karte hai to agar key nahi hua data me to wo hume error dega
+
+data= {
+    'name':"satyendra",
+    'age':156,
+    'marks':100
+}
+
+name = data.get('fees')
+print(name)
+
+note - is case me ye hume None dega name ke andar kyuki humne get() method ka use kiya hai dictionary se data nikalne ke liye. jabki agar mai ise data['fees'] karta to mujhe error milta
+
+
+
+2) what is the difference between the Response and the jsonify
+(i) jsonify- in the jsonify it is automatically do everything by its own we don't need to write it by ourself like ye python ke dictionary or list ko automatically convert kar deta hai json format me, headers ko bhi apne se set kar deta hai
+
+data = {'status': 'success', 'message': 'This is a JSON response'}
+    return jsonify(data), 200
+
+(ii) Response - Response me hume sara chiz khud se karna padta hai. means jaise json format me data send karna hai to hume json.dumps() ka use karna padega apne ditionary or list ko json format me send karne ke liye
+data = {'status': 'success', 'message': 'Manual JSON'}
+    response = Response(response=json.dumps(data),status=200, mimetype='application/json')
+'''
+
+
+from flask import Flask, Response, jsonify, request
+import json
+import mysql.connector
+
+app = Flask(__name__)
+
+def db_connection():
+    try:
+        conn = mysql.connector.connect(host='localhost', user='root', password='', database='denso_esd')
+        if(conn.is_connected()):
+            print("database is connected successfully")
+        else:
+            print("database is not connected successfully")
+        return conn
+
+    except mysql.connector.Error as err:
+        print("error in connection", err)
+
+@app.route('/create_table', methods=['GET'])
+def create_table():
+    conn = db_connection()
+    if conn is None:
+        return jsonify({'status':'error','msg':'database connection issue'}),500
+    try:
+        sql = 'CREATE TABLE student (stuid INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(20), age INT(8), marks FLOAT(5,2))'
+        cursor = conn.cursor()
+        cursor.execute(sql)
+        conn.commit()
+        cursor.close()
+        return jsonify({'status':'success', 'msg':'table is created successfully'}),200
+    
+    except mysql.connector.Error as err:
+        return jsonify({'status':'error', 'msg':f'Database Error {err}'}),500
+
+    finally:
+        conn.close()    
+
+@app.route('/insert_data', methods=['POST'])
+def insert_data():
+    data = request.get_json()
+    name = data.get('name')
+    age = data.get('age')
+    marks = data.get('marks')
+
+    try:
+
+        return jsonify({'status':'success', 'msg':'data inserted'}),201
+    
+    except:
+        return jsonify({'status':'error','msg':'data is not inserted'}),500
+
+if(__name__ == '__main__'):
+    app.run(host='0.0.0.0', port=5000)
 
 
